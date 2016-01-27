@@ -198,8 +198,12 @@ var oTest = new ActiveXObject("wscript.shell");
 		}
       
       function pageScroll() {
-         window.scrollTo(0,top);
-         scrolldelay = setTimeout('pageScroll()', 200);
+         if ( !scrolled )
+         {
+            scrolled = true;
+            window.scrollTo(0,top);
+            scrolldelay = setTimeout('pageScroll()', 200);
+         }
       }
 
       window.onload = function(){
