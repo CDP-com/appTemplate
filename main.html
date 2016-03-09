@@ -21,7 +21,6 @@
 <!-- START: Common Scripts - DO NOT EDIT THIS SECTION -->
 <!-- ************************************************ -->
 <script type="text/javascript" src="../common/template/common-scripts.js"></script>
-<script type="text/javascript" src="../common/scripts/registry.js"></script>
 <!-- ************************************************ -->
 <!--                END: Common Scripts               -->
 <!-- ************************************************ -->
@@ -33,7 +32,7 @@
 <!-- ************************************************ -->
 <!--        START: App Title - Edit This Section      -->
 <!-- ************************************************ -->
-<title>Platform Setting | SnapBack Apps</title>
+<title>appTemplate | SnapBack Apps</title>
 <!-- ************************************************ -->
 <!--                  END: App Title                  -->
 <!-- ************************************************ -->
@@ -66,6 +65,7 @@ var oTest = new ActiveXObject("wscript.shell");
 	UName = oTest.ExpandEnvironmentStrings("%USERNAME%") 
 	oTest = null;
 	
+	// Check to see if User is admin 
 	if (IsAdmin(DName, UName)) { 
 	var Admin = "Yes"
 	} 	
@@ -91,66 +91,32 @@ var oTest = new ActiveXObject("wscript.shell");
 	var curCaution=0;
 	var defUserBtn="";
 	
+	// My Variables
+	var regBool=false;
+	var regNum=0;
+	var regString=null;
+	
 	// Initialize Global Permissions for Current User
-	InitializePermissions();
-	
-	//loop through number of buttons set by author
-	for (i=0; i<btncount; i++)
-	{
+	InitializePermissions();    // needed because Install is not aware of all users and future users
+	var i=0;
+	// Check to see if App Registry Admin Button Permissions were installed 
+		curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number	
+        var AppRoot = "HKEY_LOCAL_MACHINE\\SOFTWARE\\CDP\\SnapBack\\Apps\\";
+	    var RegPath = AppRoot + appname + "\\button" + i + "\\CurrentEnableButton";
+		//alert("for button: "+i+"   RegPath="+RegPath);
+		regBool = fnRegExists(RegPath);
+			if (regBool==false)
+			{
+				//EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
+				//if (EnableButtonCurrent == null){
+				//if (regstate) alert("ERROR: The registry for this app has not been installed. You will not be able to run these buttons.");
+				//regstate=0;
+				// Registry is not set
+			}
 
-	try {
-	    // this is to test to see if any enable button changes has been made 
-	    EnableButtonLMD = GetButtonIniValue(appname, i, "EnableButtonLastModifiedDate");
-		lastModDatebtn="btn"+i+"_EnableButtonLastModified";
-		//setbtnValue(lastModDate,EnableButtonLMD);   // set local global value to registry entry
-		curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
-		EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
-		curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
-	} catch (e) {
-		// there is no enablebutton date so set registry up with local globals set by Author
-		defEnableBtn="btn"+i+"_DefaultEnableButton";    // setup local variable name for button number		
-		SetButtonIniValue(appname, i, "CurrentEnableButton", eval(defEnableBtn), "REG_DWORD"); 
-		curUserbtn="btn"+i+"_CurrentEnableButton";
-		CurUserbtn=eval(defEnableBtn);		
-	}
-	try {
-		// see if admin change Normal User Flag
-        AllowUserLMD = GetButtonIniValue(appname,i,"AllowUserLastModifiedDate");
-		lastModDate="btn"+i+"_AllowUserLastModifiedDate";
-		//lastModDate,eval(AllowUserLMD);
-		currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
-		curUserbtn="btn"+i+"_CurrentAllowUser";
-		CurUserbtn=eval(currentUser);
-    } catch (e) {
-	    // Normal User has not been set by Admin
-	    defUserBtn="btn"+i+"_DefaultAllowUser";
-		SetButtonIniValue(appname, i, "DefaultCurrentAllowUser", eval(defUserBtn), "REG_DWORD"); 
-		SetButtonIniValue(appname, i, "CurrentAllowUser", eval(defUserBtn), "REG_DWORD"); 
-		curUserbtn="btn"+i+"_CurrentAllowUser";
-		CurUserbtn=eval(defUserBtn);
-
-   	}
-	try {
-		// Check if admin modified caution flag for this button
-		CautionLMD = GetButtonIniValue(appname,i,"CautionLastModifiedDate");
-		lastModDate="btn"+i+"_CautionLastModifiedDate";
-		//setbtnValue(lastModDate,CautionLMD);
-		curCautionbtn="btn"+i+"_CurrentCaution";
-		curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
-		//setbtnValue(curCautionbtn,curCaution);
-	}catch(e)
-	{
-	    //alert("In no Default Caution Flag");
-		defcurCautionbtn="btn"+i+"_DefaultCaution";
-		SetButtonIniValue(appname, i, "DefaultCaution", eval(defcurCautionbtn), "REG_DWORD");
-		SetButtonIniValue(appname, i, "CurrentCaution", eval(defcurCautionbtn), "REG_DWORD");
-		//alert("Leaving No Caution Flag");
-	} 
-	} // end loop through buttons
-	
+	//DONT need to read in registry values as we get them when we need them
 
 </script>
-
 
 <script type="text/javascript">	  
       function getRelativeURL()
@@ -234,7 +200,15 @@ var oTest = new ActiveXObject("wscript.shell");
 		    $(".acc-section").hide();
 		}
     });
+
+	$(function() {
+		$( "#accordion" ).accordion({
+			heightStyle: "content",
+			collapsible: true
+		});
+	});	
 </script>
+
 <script type="text/javascript" src="../common/scripts/onlinecheck.js"></script>
 <!-- ************************************************ -->
 <!--               END: Required Scripts              -->
@@ -288,9 +262,10 @@ var oTest = new ActiveXObject("wscript.shell");
 	<div id="tabnav">
 		<ul class="tabs">
 			<li><a href="#tab1" title="Run this App from Here">App Home</a></li>
-			<li><a href="#tab2" title="The technical details of what this App does">How it Works</a></li>
-			<li><a href="#tab3" title="This App is free to Use">Pricing</a></li>
-			<li><a href="#tab4" title="Record of Each Committee's work and report to users">What's Certified</a></li>
+			<li><a href="#tab2" title="Run this App from Here">Permissions</a></li>
+			<li><a href="#tab3" title="The technical details of what this App does">How it Works</a></li>
+			<li><a href="#tab4" title="This App is free to Use">Pricing</a></li>
+			<li><a href="#tab5" title="Record of Each Committee's work and report to users">What's Certified</a></li>
 		</ul>
 		<span></span>
 	</div><!--End #tabs-->
@@ -318,7 +293,7 @@ var oTest = new ActiveXObject("wscript.shell");
 			<tr>
 				<td style="width: 25%;">
 					<div id="cdpbutton1" class="button-wrapper">
-					<p><button style="width: 100%;" onclick="javascript:RunApps(appname, '0', DName, UName, btn0_Command)" title="cdpbutton: Clicking this button will run a script!">Run Your App</button></p>
+					<p><button style="width: 100%;" onclick="javascript:RunApps(appname, '0', DName, UName, btn0_Command)" title="cdpbutton: Clicking this button will run a script!"><script type="text/javascript">document.write(btn0_Title)</script></button></p>
 					</div>
 				</td>
 				<td valing=top>
@@ -329,7 +304,7 @@ var oTest = new ActiveXObject("wscript.shell");
 			<tr>
 				<td style="width: 25%;">
 					<div id="cdpbutton1" class="button-wrapper">
-					<p><button style="width: 100%;" onclick="javascript:RunApps(appname, '1', DName, UName, btn1_Command)" title="cdpbutton: Clicking this button will run a script!">Run Second App</button></p>
+					<p><button style="width: 100%;" onclick="javascript:RunApps(appname, '1', DName, UName, btn1_Command)" title="cdpbutton: Clicking this button will run a script!"><script type="text/javascript">document.write(btn1_Title)</script></button></p>
 					</div>
 				</td>
 				<td valing=top>
@@ -340,175 +315,85 @@ var oTest = new ActiveXObject("wscript.shell");
 		</table>
 				
 		<p>To use this template, clone/copy this directory and open the included files in your editor of choice.</p>						
-						
-
-	
-						
+										
 	</div><!--End Tab1-->
 						
 	<div id="tab2">
 	
-<div id="options">
-	<a href="javascript:parentAccordion.pr(1)">Expand All</a> | <a href="javascript:parentAccordion.pr(-1)">Collapse All</a>
-</div>
-
-  <ul class="acc" id="acc">
- <li>
-		<h3><script type="text/javascript">document.write(appname)</script>  Information and Permissions</h3>
-		<div class="acc-section">
-		</div>
-	</li>
-  
-    
-    <li>
-      <h3>Administrator Button Permission Settings</h3>
-
-      <div class="acc-section">
-        <div class="acc-content">
-		The Admin can set permissions for each button.
-		<ul>
-			<li>Enable Button - allows anyone to run if enabled and no one to run if disabled</li>
-			<li>Enable Normal User - allows a normal user to run the button or not </li>
-			<li>Run without Warning - if disabled a warning message will be presented</li>
-		</ul>
-		<div id="AdminPerms">
-		<script type="text/javascript">CreateButtonAdminTable();</script>
-		  </div>
-		  Permission Logic <br>
-		   <ul>
-				<li>Anyone run?</li>
-				<ul>
-					<li>If NO --- STOP and THROW a MESSAGE</li>
-					<li>If yes -- keep going</li>
-				</ul>
-				<li> GET STATE -- </li>
-				<ul>
-					<li>IF Admin, SKIP to "GLOBAL CAUTION" step</li>
-					<li>IF not admin, continue</li>
-					<ul>
-						<li>CAN normal user run??</li>
-						<li>IF yes --- continue</li>
-						<li>IF no --- throw message and STOP</li>
-					</ul>
-					<li>IS GLOBAL caution to the wind? </li>
-						<ul>
-							<li>IF yes, SKIP to RUN</li>
-							<li>IF no -- CONTINUE</li>
-						</ul>
-						<li>Is BUTTON caution?</li>
-							<ul>
-								<li>IF yes -- THROW MESSAGE and STOP</li>
-								<li>IF no -- CONTINUE</li>
-							</ul>
-				</ul>
-				<li> RUN</li>
-			</ul>
-        </div>
-      </div>
-    </li>
-
-    
+		<p class="developers-message">[To the Developer - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.]</p>
 	
-    
-      
-  </ul>
-      						<p class="developers-message">[To the Developer - Use this section to describe in greater technical detail how your app works]</p>
-		
-		<p>This area is dedicated to providing technical details about the app.  Provide the mechanics of how the app works.  Generally speaking, if you are making changes to a user's computer, it's best to detail those changes in a completely transparent manner.</p>
-		
-		<p>Include more details than what would appear on the "Home" tab and be free to use more technical language in the process.</p>
+		<div id="options">
+			<a href="javascript:parentAccordion.pr(1)">Expand All</a> | <a href="javascript:parentAccordion.pr(-1)">Collapse All</a>
+		</div>
 
-		<hr />
+		<div id="accordion">
 		
-		<h3>Technical Details</h3>
-		<p>Include, in specific wording, what your app does.  Some questions you may want to answer include: What files does your app change?  In what programming language is your app written?  Are there any resources you've used to create your app?  Feel free to include as much detail as you want.</p>
+				<h3>Administrator Button Permission Settings</h3>
+				<div class="acc-section">
+					<div class="acc-content">
+						<p>The Admin can set permissions for each button.</p>
+						<ul>
+							<li>Enable Button - allows anyone to run if enabled and no one to run if disabled</li>
+							<li>Enable Normal User - allows a normal user to run the button or not </li>
+							<li>Run without Warning - if disabled a warning message will be presented</li>
+						</ul>
+						<div id="AdminPerms">
+							<script type="text/javascript">CreateButtonAdminTable();</script>
+						</div>
+					</div>
+				</div>
+		</div>
+	
+	</div><!--End Tab2-->
+	
+	<div id="tab3">
+	
+		<p class="developers-message">[To the Developer - Use this section to describe in greater technical detail how your app works]</p>
 
-		<hr />
+		<!-- ************************************************************************ -->
+		<!--           Below is the standard technical details instructions           -->
+		<!-- Remove and include your app's individual technical details in plain HTML -->
+		<!-- ************************************************************************ -->
+		<script type="text/javascript" src="../common/template/standardtechnical.js"></script>
 		
 		<h3>Script Source Code</h3>
-		<strong>cdpbutton1: <em>onclick="javascript:runapp('displaymessage.js')"</em></strong>
-		<p><iframe id="srccode" name="srccode" width="80%" frameborder="0" scrolling="auto" src="displaymessage.txt" seamless sandbox=""></iframe></p>
-</div><!--End Tab2-->
-	<div id="tab3">
+		<strong>First Button</strong>
+		<p><iframe id="srccode" name="srccode" width="80%" frameborder="0" scrolling="auto" src="" seamless sandbox=""></iframe></p>
+			<script>
+				document.getElementById("srccode").src = btn0_Source;
+			</script>
+		
+		<strong>Second Button</strong>
+		<p><iframe id="srccode1" name="srccode1" width="80%" frameborder="0" scrolling="auto" src="" seamless sandbox=""></iframe></p>
+			<script>
+				document.getElementById("srccode1").src = btn1_Source;
+			</script>
+	
+	</div><!--End 3-->
+	
+	<div id="tab4">
 		  
 		<p class="developers-message">[To the Developer - Use this section to detail any associated costs with your app.]</p>
 		
-		<p><strong>No Cost to You.</strong></p>
-		
-		<p>All SnapBack Apps are free for both business and personal use, provided that the SnapBack Platform is "hand installed", by a user and not "mass installed".    However, for some apps they may be working with or modify another application, such as Microsoft Word, which is obviously not free.  Sometimes we might independently offer that application to you with a link to a separate page.  If and when we offer you the software, we warrant that to our best ability, we've fully disclosed which products in that category are best, the least cost prices with links, along with any dissenting opinions from contributors like you. </p>
-		
-		<p>For all our users, contributors, attributable sources, and other companies, we've prepared an easy to understand page that explains all our <a id="policiesterms" href="#" >Policies, Complete Terms, and Conditions of our SnapBack Apps, Platform, website, and our SnapBack Apps Factory</a> where they are produced.  Together, this page, the FAQ, and the discussions of users, contributors, and CDP should convince you that this project is worthy of your full support.</p>
-	  
-	</div><!--End Tab3-->
+		<!-- ********************************************************************************* -->
+		<!--                    Below is the standard app pricing information                  -->
+		<!-- Remove and include your app's individual pricing details in platin HTML if needed -->
+		<!-- ********************************************************************************* -->
+		<script type="text/javascript" src="../common/template/standardpricing.js"></script>
+
+	</div><!--End Tab4-->
 						
-	<div id="tab4">
+	<div id="tab5">
 			
 		<p class="developers-message">[To the Developer - DO NOT EDIT - The various Committees will edit this section during your app's approval process.]</p>
-		
-		<p>Each Committee has signed off on their part.  For more detail of each committees' policies and procedures, visit their home pages.</p>  
 
-		<table class="certification-table">
-			<tr>
-				<th>Certification Committee</th>
-				<th>Certification Details</th>
-			</tr>
-
-			<tr>
-				<td class="committee-name">CDP Certification</td>
-				<td>
-					<p>Released = [Date] | Version = [Version] | First Released = [Date] | Manifest Name = [Name] | By = [Author/Group]</p>
-					<p>NOTE: CDP will include any notes directed at the user here.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="committee-name">Performance / System Impact</td>
-				<td>
-					<p>RAM = [Details] | DISK = [Details] | Runtime/CPU = [Details]</p>
-					<p>NOTE: the Performance/System Impact Committee will include any notes directed at the user here.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="committee-name">Security/Logging/User Rights/Locations</td>
-				<td>
-					<p>
-						Security:[Details]<br /> 
-						Logging: [Details]<br />
-						Users: [Details]<br />
-						Rights required: [Details]<br />
-						Locations: [Details]<br />
-					</p>
-					<p>NOTE: the Security/Logging/User Rights/Locations Committee will include any notes directed at the user here.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="committee-name">Safety/Conflicts/Compatibility/Expertise</td>
-				<td>
-					<p>Safe = [Details] | Conflicts = [Details] | Compatibility = [Details] | UserType = [Details]</p>
-					<p>NOTE: the Safety/Conflicts/Compatibility/Expertise Committee will include any notes directed at the user here.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="committee-name">Legal/Attribution/Liability</td>
-				<td>
-					<p>Attributed = [Details] | DMCA Issues = [Details] | Damage = [Details]</p>
-					<p>NOTE: the Legal/Attribution/Liability Committee will include any notes directed at the user here.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="committee-name">Monetization/Privacy</td>
-				<td>
-					<p>Monetization = [Details] | Privacy Issues = [Details]</p>
-					<p>NOTE: the Monetization/Privacy Committee will include any notes directed at the user here.</p>
-				</td>
-			</tr>
-		</table>
+		<!-- ******************************************************************** -->
+		<!--            Below is the standard certification information           -->
+		<!--            Do not remove or otherwise modify this section            -->
+		<!-- ******************************************************************** -->
+		<script type="text/javascript" src="../common/template/standardcertification.js"></script>
 				
-	</div><!--End Tab4-->
+	</div><!--End Tab5-->
 	
 
 
@@ -589,16 +474,8 @@ var oTest = new ActiveXObject("wscript.shell");
 
 
 
-<script type="text/javascript" src="script.js"></script>
-<script type="text/javascript">
-var parentAccordion=new TINY.accordion.slider("parentAccordion");
-parentAccordion.init("acc","h3",0,0);
-parentAccordion.pr(1);
 
-
-</script>
 
 </body>
-
 </html> 
 
