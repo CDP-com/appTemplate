@@ -8,6 +8,8 @@ Add any notes you may find pertinent
 
 Changelog
 ----
+03/14/2016, smadara, Added styling options to main.html, removed script.js
+
 03/09/2016, smadara, Heavily modified main.html, cleaned up app-lib.js
 
 12/30/2015, mstiles, Added new global variable scrolled main.html

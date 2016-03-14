@@ -60,20 +60,10 @@
 <!--START: Required Scripts - DO NOT EDIT THIS SECTION-->
 <!-- ************************************************ -->
 <script type="text/javascript">
-var oTest = new ActiveXObject("wscript.shell");
-	DName = oTest.ExpandEnvironmentStrings("%COMPUTERNAME%") 
-	UName = oTest.ExpandEnvironmentStrings("%USERNAME%") 
-	oTest = null;
-	
+
+	var ManifestURL_Local = "%ALLUSERSPROFILE%\\cdp\\snapback\\apps\\apptemplate\\apptemplate.xml";
 	// Check to see if User is admin 
-	if (IsAdmin(DName, UName)) { 
-	var Admin = "Yes"
-	} 	
-	else  	
-	{
-	var Admin = "No"
-	};
-	//alert(Admin);
+
 	
 // globals
 	var EnableButtonLMD=0;
@@ -91,6 +81,10 @@ var oTest = new ActiveXObject("wscript.shell");
 	var defUserBtn="";
 	
 	// My Variables
+	var oTest = new ActiveXObject("wscript.shell");
+	DName = oTest.ExpandEnvironmentStrings("%COMPUTERNAME%") 
+	UName = oTest.ExpandEnvironmentStrings("%USERNAME%") 
+
 	var regBool=false;
 	var regNum=0;
 	var regString=null;
@@ -98,7 +92,7 @@ var oTest = new ActiveXObject("wscript.shell");
 	// Initialize Global Permissions for Current User
 	InitializePermissions();    // needed because Install is not aware of all users and future users
 	var i=0;
-	// Check to see if App Registry Admin Button Permissions were installed 
+	    //Read App Registry Button Permissions 
 		curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number	
         var AppRoot = "HKEY_LOCAL_MACHINE\\SOFTWARE\\CDP\\SnapBack\\Apps\\";
 	    var RegPath = AppRoot + appname + "\\button" + i + "\\CurrentEnableButton";
@@ -106,11 +100,61 @@ var oTest = new ActiveXObject("wscript.shell");
 		regBool = fnRegExists(RegPath);
 			if (regBool==false)
 			{
-				//EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
-				//if (EnableButtonCurrent == null){
-				//if (regstate) alert("ERROR: The registry for this app has not been installed. You will not be able to run these buttons.");
-				//regstate=0;
-				// Registry is not set
+				// runService to initialize registry for app 
+				// comment out for development and load your initial perms via a .reg file
+				runService(ManifestURL_Local,"","perms");
+			}
+			else
+			{
+				// read in data
+				//loop through number of buttons set by author
+
+	            for (i=0; i<btncount; i++)
+				{
+
+				try {
+					// this is to test to see if any enable button changes has been made 
+					EnableButtonLMD = GetButtonIniValue(appname, i, "EnableButtonLastModifiedDate");
+					lastModDatebtn="btn"+i+"_EnableButtonLastModified";
+					//setbtnValue(lastModDate,EnableButtonLMD);   // set local global value to registry entry
+					curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
+					EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
+					curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
+				} catch (e) {
+					// there is no enablebutton date so just get the value there
+					curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
+					EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
+					curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
+				}
+				try {
+					// see if admin change Normal User Flag
+					AllowUserLMD = GetButtonIniValue(appname,i,"AllowUserLastModifiedDate");
+					lastModDate="btn"+i+"_AllowUserLastModifiedDate";
+					//lastModDate,eval(AllowUserLMD);
+					currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
+					curUserbtn="btn"+i+"_CurrentAllowUser";
+					CurUserbtn=eval(currentUser);
+				} catch (e) {
+				// Normal User has not been set by Admin  so just get allow user
+					currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
+					curUserbtn="btn"+i+"_CurrentAllowUser";
+					CurUserbtn=eval(currentUser);
+
+				}
+				try {
+					// Check if admin modified caution flag for this button
+					CautionLMD = GetButtonIniValue(appname,i,"CautionLastModifiedDate");
+					lastModDate="btn"+i+"_CautionLastModifiedDate";
+					//setbtnValue(lastModDate,CautionLMD);
+					curCautionbtn="btn"+i+"_CurrentCaution";
+					curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
+					//setbtnValue(curCautionbtn,curCaution);
+				}catch(e)
+				{
+	   				curCautionbtn="btn"+i+"_CurrentCaution";
+					curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
+				} 
+	} // end loop through buttons
 			}
 
 	//DONT need to read in registry values as we get them when we need them
@@ -193,22 +237,38 @@ var oTest = new ActiveXObject("wscript.shell");
 
 </script>
 
-
-	
 <script>
+	//Initialize jQuery UI Elements and Other UI Features
+	//The "Collapse Outline" Element
     $(document).ready(function() {
         $('.menu-link').bigSlide();
-		if (Admin == "No") {
-		    $(".acc-section").hide();
-		}
+		//if (Admin == "No") {
+		    //$(".acc-section").hide();
+		//}
     });
+	
+	//The "View More" Element
+	$(document).ready(function(){
+		$('.viewmore').showHide();
+	});
 
-	$(function() {
-		$( "#accordion" ).accordion({
-			heightStyle: "content",
-			collapsible: true
+	//The "Accordion" Element
+	//<![CDATA[
+	$(function(){
+		jQuery('#accordion').accordion({ collapsible:true, heightStyle:"content", active:false, autoHeight:true, disabled:true});
+		jQuery('#accordion h3.ui-accordion-header').click(function(){
+			jQuery(this).next().slideToggle();
 		});
-	});	
+		jQuery('.accordion-expand-all').click(function(){
+			jQuery('#accordion h3.ui-accordion-header').next().slideDown();
+		});
+	});
+	//]]>
+
+	//The "Tabs" Element
+	$(function() {
+		$( "#content-tabs" ).tabs();
+	  }); 	
 </script>
 
 <script type="text/javascript" src="../common/scripts/onlinecheck.js"></script>
@@ -316,24 +376,95 @@ var oTest = new ActiveXObject("wscript.shell");
 
 		</table>
 				
-		<p>To use this template, clone/copy this directory and open the included files in your editor of choice.</p>						
+		<p>To use this template, clone/copy this directory and open the included files in your editor of choice.</p>
+
+		<h2>Styling Your App's UI</h2>
+		<p>*** NOTE TO CDP: I intend to remove the following from the appTemplate and place it into it's own app--the "Style" app--which will be part of the development toolkit and which will showcase the various ways an app can be styled.  I intend to this after the appTemplate is more or less finalized. - smmadara ***</p>
+		<p>There are a number of ways to style your app's UI.  jQuery User Interface elements can be used with any app are included, by default, with SnapBack Apps.  Below are some of the more useful elements that can help organize the information within your app.  View the source code to see how the examples are structured. Use the link to the right to toggle the specific styling content. <a class="viewmore" href="#" rel="#viewmore_styling">View More</a></p>
+				
+		<div id="viewmore_styling" class="viewmorediv" style="display: none;">
+		
+		<strong>View More/View Less</strong>
+		<p>Below are some examples of the "View More/View Less" feature which allows you hide select content on page load.  It additionally gives the user a chance to hide information they don't find relevant or which otherwise may be unnecessary upon a cursory glance.</p>
+		<p>This is a line in which additional information is hidden by default. <a class="viewmore" href="#" rel="#viewmore_1">View More</a></p>
+		<div id="viewmore_1" class="viewmorediv" style="display: none;">
+			<p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.</p>
+		</div>
+
+		<p>This is a line in which additional information is shown by default. <a class="viewmore" href="#" rel="#viewmore_2">View Less</a></p>
+		<div id="viewmore_2" class="viewmorediv">
+			<ul>
+				<li>Lorem ipsum dolor sit amet</li>
+				<li>Consectetur adipisicing elit</li>
+				<li>Sed do eiusmod tempor incididunt</li>
+				<li>Ut labore et dolore magna</li>
+				<li>Proin viverra leo ut odio</li>
+			</ul>
+		</div>
+
+		<strong>Accordion</strong>
+		<p>Below are some examples of the "Accordion" feature which allows you expand/close organized information. The raw code is based upon the standard accordion widget inherent in jQuery UI.</p>
+		<div id="accordion">
+			<h3>Section 1</h3>
+			<div>
+				<p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.</p>
+			</div>
+			<h3>Section 2</h3>
+			<div>
+				<p>Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. Insuscipit faucibus urna.</p>
+			</div>
+			<h3>Section 3</h3>
+			<div>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a class="viewmore" href="#" rel="#viewmore_3">View More</a></p>
+				<div id="viewmore_3" class="viewmorediv" style="display: none;">
+				<p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.</p>
+					<ul>
+						<li>Lorem ipsum dolor sit amet</li>
+						<li>Consectetur adipisicing elit</li>
+						<li>Sed do eiusmod tempor incididunt</li>
+						<li>Ut labore et dolore magna</li>
+						<li>Proin viverra leo ut odio</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<strong>Tabs</strong>
+		<p>Below are some examples of the "Tabs" feature which allows you house multiple content panels inside a single content area. The raw code is based upon the standard tabs widget inherent in jQuery UI.</p>
+		<div id="content-tabs">
+			<ul>
+				<li><a href="#tabs-1">Tab 1</a></li>
+				<li><a href="#tabs-2">Tab 2</a></li>
+				<li><a href="#tabs-3">Tab 3</a></li>
+			</ul>
+			<div id="tabs-1">
+				<p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+			</div>
+			<div id="tabs-2">
+				<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+			</div>
+			<div id="tabs-3">
+				<p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus. <a class="viewmore" href="#" rel="#viewmore_4">View More</a></p>
+				<div id="viewmore_4" class="viewmorediv" style="display: none;">
+					<p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+				</div>
+				
+			</div>
+		</div>
+		
+		</div><!--End Styling View More-->		
 										
 	</div><!--End Tab1-->
 						
 	<div id="tab2">
 	
 		<p class="developers-message">[To the Developer - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.]</p>
-	
-		<div id="options">
-			<a href="javascript:parentAccordion.pr(1)">Expand All</a> | <a href="javascript:parentAccordion.pr(-1)">Collapse All</a>
-		</div>
 
 		<div id="accordion">
-		
 				<h3>Administrator Button Permission Settings</h3>
 				<div class="acc-section">
 					<div class="acc-content">
-						<p>The Admin can set permissions for each button.</p>
+						<p>You must be running as administrator to change permissions.  <a onClick="SBAdmin();" href="#">Click here to run the platform as administrator.</a> </p>
 						<ul>
 							<li>Enable Button - allows anyone to run if enabled and no one to run if disabled</li>
 							<li>Enable Normal User - allows a normal user to run the button or not </li>
