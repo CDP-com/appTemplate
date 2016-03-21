@@ -2,6 +2,6 @@
 
 
 var wsh = new ActiveXObject("WScript.Shell");
-wsh.popup( "Hello World from SnapBack Apps!", 5, "Hello World App Message" );
+wsh.popup( "App Template Message 1!", 5, "App Template Message 1" );
 
 wsh = null;

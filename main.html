@@ -30,18 +30,6 @@
 
 
 <!-- ************************************************ -->
-<!--        START: App Title - Edit This Section      -->
-<!-- ************************************************ -->
-<title>appTemplate | SnapBack Apps</title>
-<!-- ************************************************ -->
-<!--                  END: App Title                  -->
-<!-- ************************************************ -->
-
-
-
-
-
-<!-- ************************************************ -->
 <!--             START: App Specific Files            -->
 <!--        Add Any of Your Custom Javascript,        --> 
 <!--   Custom CSS, and Other App Specific Files Here  -->
@@ -50,6 +38,20 @@
 <script type="text/javascript" src="app-lib.js"></script>
 <!-- ************************************************ -->  
 <!--               END: App Script Files              -->
+<!-- ************************************************ -->
+
+
+
+
+
+<!-- ************************************************ -->
+<!--        START: App Title - DO NOT EDIT THIS SECTION      -->
+<!-- ************************************************ -->
+<script>
+document.title = apptitle + " | SnapBack Apps";
+</script>
+<!-- ************************************************ -->
+<!--                  END: App Title                  -->
 <!-- ************************************************ -->
 
 
@@ -102,6 +104,7 @@
 			{
 				// runService to initialize registry for app 
 				// comment out for development and load your initial perms via a .reg file
+				// comment out if you have no buttons
 				runService(ManifestURL_Local,"","perms");
 			}
 			else
@@ -255,12 +258,12 @@
 	//The "Accordion" Element
 	//<![CDATA[
 	$(function(){
-		jQuery('#accordion').accordion({ collapsible:true, heightStyle:"content", active:false, autoHeight:true, disabled:true});
-		jQuery('#accordion h3.ui-accordion-header').click(function(){
+		jQuery('.accordion').accordion({ collapsible:true, heightStyle:"content", active:false, autoHeight:true, disabled:true});
+		jQuery('.accordion h3.ui-accordion-header').click(function(){
 			jQuery(this).next().slideToggle();
 		});
 		jQuery('.accordion-expand-all').click(function(){
-			jQuery('#accordion h3.ui-accordion-header').next().slideDown();
+			jQuery('.accordion h3.ui-accordion-header').next().slideDown();
 		});
 	});
 	//]]>
@@ -286,14 +289,14 @@
 <!--  START: Left Sidebar - DO NOT EDIT THIS SECTION  -->
 <!-- ************************************************ -->
 
-<script type="text/javascript" src="../common/template/sidebar1.js"></script>
+<script type="text/javascript">CreateSidebar1();</script>
 
 	<script type="text/javascript">
 		var nodeURL = getRelativeURL();
 			loadTree('treemenu01', 'menu01', nodeURL, menu01);
 	</script>
 
-<script type="text/javascript" src="../common/template/sidebar2.js"></script>
+<script type="text/javascript">CreateSidebar2();</script>
 
 <!-- ************************************************ -->
 <!--                 END: Left Sidebar                -->
@@ -304,80 +307,72 @@
 
 
 <!-- ************************************************ -->
-<!--      START: Page Content - Edit this Section     -->
+<!-- START: Page Content 1 - DO NOT EDIT THIS SECTION -->
 <!-- ************************************************ -->
-<div id="app-intro">
-	<div class="app-name">
-		AppTemplate (EDIT ME)
-	</div><!--End #app-name-->
-	
-	<div class="producer-credits">
-		<img src="../common/media/default-group-icon.png" alt="Group Name"/>
-		<a id="connect" href="http://factory.snapback-apps.com/app/new-app-template/" title="Connect with the Developers of this App"><!--Include a Link to your App's Connect Page-->
-		Produced by the App Helpers Group<br />
-		Suggest / Contribute / Get Help
-		</a>
-	</div><!--End #producer-credits-->
-</div><!--End #app-intro-->
+<script type="text/javascript">CreatePageContent1();</script>
+<!-- ************************************************ -->
+<!--               END: Page Content 1                -->
+<!-- ************************************************ -->
 
-<div id="tab-container">
-	<div id="tabnav">
-		<ul class="tabs">
-			<li><a href="#tab1" title="Run this App from Here">App Home</a></li>
-			<li><a href="#tab2" title="The technical details of what this App does">How it Works</a></li>
-			<li><a href="#tab3" title="This App is free to Use">Pricing</a></li>
-			<li><a href="#tab4" title="Record of Each Committee's work and report to users">What's Certified</a></li>
-			<li><a href="#tab5" title="Permissions for this App">Permissions</a></li>
-		</ul>
-		<span></span>
-	</div><!--End #tabs-->
-</div><!--End #tab-container -->
 
-<div id="content-container">
-      				
+
+
+
+<!-- ************************************************ -->
+<!--     START: Page Tabs - Add More If Necessary     -->
+<!-- ************************************************ -->
+	<ul class="tabs">
+		<li><a href="#tab1" title="Run this App from Here">App Home</a></li>
+		<li><a href="#tab2" title="The technical details of what this App does">How it Works</a></li>
+		<li><a href="#tab3" title="This App is free to Use">Pricing</a></li>
+		<li><a href="#tab4" title="Record of Each Committee's work and report to users">What's Certified</a></li>
+		<li><a href="#tab5" title="Permissions for this App">Permissions</a></li>
+	</ul>
+<!-- ************************************************ -->
+<!--                 END: Page Tabs                   -->
+<!-- ************************************************ -->
+
+
+
+
+
+<!-- ************************************************ -->
+<!-- START: Page Content 2 - DO NOT EDIT THIS SECTION -->
+<!-- ************************************************ -->
+<script type="text/javascript">CreatePageContent2();</script>
+<!-- ************************************************ -->
+<!--               END: Page Content 2                -->
+<!-- ************************************************ -->
+
+
+
+
+
+<!-- ************************************************ -->
+<!--   START: Page Tab Content - Edit this Section    -->
+<!-- ************************************************ -->    				
 	<div id="tab1">
-	
-	<p class="developers-message">[To the Developer - Use this section to combine your app's functions with various buttons, describe your app, describe the group behind the app, and provide basic details/instructions to end users.  For detailed instructions regarding the development of an app, view the <a id="stepbystep" href="http://factory.snapback-apps.com/step-by-step-app-development-guide/" title="Step by Step Development Guide">"Step by Step Development Guide"</a>.]</p>
+
+		<p class="developers-message">[To the Developer - Use this section to combine your app's functions with various buttons, describe your app, describe the group behind the app, and provide basic details/instructions to end users.  For detailed instructions regarding the development of an app, view the <a id="stepbystep" href="http://factory.snapback-apps.com/step-by-step-app-development-guide/" title="Step by Step Development Guide">"Step by Step Development Guide"</a>.]</p>
 		
 		<p><strong>This area is dedicated to providing a description of your app.  It's generally encouraged to include the following information: </strong></p>
-
-
-			<ol>
-				<li>A description of your app</li>
-				<li>Why this app is needed [the app's purpose]</li>
-				<li>Who this app is intended for [the app's audience]</li>
-				<li>Any other pertinent information you may find necessary</li>
-
-
-			</ol>
-							
-		<table class="main-table">
-			<tr>
-				<td style="width: 25%;">
-					<div id="cdpbutton1" class="button-wrapper">
-					<p><button style="width: 100%;" onclick="javascript:RunApps(appname, '0', DName, UName, btn0_Command)" title="cdpbutton: Clicking this button will run a script!"><script type="text/javascript">document.write(btn0_Title)</script></button></p>
-					</div>
-				</td>
-				<td valing="top">
-					This App displays a message when the user clicks the button on the left.
-				</td>
-			</tr>
-			
-			<tr>
-				<td style="width: 25%;">
-					<div id="cdpbutton1" class="button-wrapper">
-					<p><button style="width: 100%;" onclick="javascript:RunApps(appname, '1', DName, UName, btn1_Command)" title="cdpbutton: Clicking this button will run a script!"><script type="text/javascript">document.write(btn1_Title)</script></button></p>
-					</div>
-				</td>
-				<td valing="top">
-					This App displays a message when the user clicks the button on the left.
-				</td>
-			</tr>
-
-		</table>
+		<ol>
+			<li>A description of your app</li>
+			<li>Why this app is needed [the app's purpose]</li>
+			<li>Who this app is intended for [the app's audience]</li>
+			<li>Any other pertinent information you may find necessary</li>
+		</ol>
+		
+		<!-- ************************************************ -->
+		<!--  START: Button Table - DO NOT EDIT THIS SECTION  -->
+		<!-- ************************************************ -->	
+		<script type="text/javascript">CreateButtonRunTable();</script>
+		<!-- ************************************************ -->
+		<!--                 END: Button Table                -->
+		<!-- ************************************************ -->
 				
 		<p>To use this template, clone/copy this directory and open the included files in your editor of choice.</p>	
-										
+			
 	</div><!--End Tab1-->
 	
 	<div id="tab2">
@@ -388,20 +383,18 @@
 		<!--           Below is the standard technical details instructions           -->
 		<!-- Remove and include your app's individual technical details in plain HTML -->
 		<!-- ************************************************************************ -->
-		<script type="text/javascript" src="../common/template/standardtechnical.js"></script>
+		<script type="text/javascript">CreateStandardTechnical();</script>
 		
-		<h3>Script Source Code</h3>
-		<strong>First Button</strong>
-		<p><iframe id="srccode" name="srccode" width="80%" frameborder="0" scrolling="auto" src="" seamless sandbox=""></iframe></p>
-			<script>
-				document.getElementById("srccode").src = btn0_Source;
-			</script>
 		
-		<strong>Second Button</strong>
-		<p><iframe id="srccode1" name="srccode1" width="80%" frameborder="0" scrolling="auto" src="" seamless sandbox=""></iframe></p>
-			<script>
-				document.getElementById("srccode1").src = btn1_Source;
-			</script>
+		
+		
+		<!-- ******************************************************* -->
+		<!--  START: Source Code Display - DO NOT EDIT THIS SECTION  -->
+		<!-- ******************************************************* -->	
+		<script type="text/javascript">CreateSrcCodeIframes();</script>
+		<!-- ******************************************************* -->
+		<!--                END: Source Code Display                 -->
+		<!-- ******************************************************* -->
 	
 	</div><!--End Tab2-->
 	
@@ -413,8 +406,10 @@
 		<!--                    Below is the standard app pricing information                  -->
 		<!-- Remove and include your app's individual pricing details in platin HTML if needed -->
 		<!-- ********************************************************************************* -->
-		<script type="text/javascript" src="../common/template/standardpricing.js"></script>
-
+		<script type="text/javascript">CreateStandardPricing();</script>
+		
+		
+		
 	</div><!--End Tab3-->
 						
 	<div id="tab4">
@@ -425,41 +420,33 @@
 		<!--            Below is the standard certification information           -->
 		<!--            Do not remove or otherwise modify this section            -->
 		<!-- ******************************************************************** -->
-		<script type="text/javascript" src="../common/template/standardcertification.js"></script>
-				
+		<script type="text/javascript">CreateStandardCertification();</script>
+		
+		
+		
 	</div><!--End Tab4-->
 	
 	<div id="tab5">
 	
-		<p class="developers-message">[To the Developer - DO NOT EDIT - The permissions table will be automatically generated upon page load if your buttons are properly configured.]</p>
-
-		<div id="accordion">
-				<h3>Administrator Button Permission Settings</h3>
-				<div class="acc-section">
-					<div class="acc-content">
-						<p>You must be running as administrator to change permissions.  <a onClick="SBAdmin();" href="#">Click here to run the platform as administrator.</a> </p>
-						<ul>
-							<li>Enable Button - allows anyone to run if enabled and no one to run if disabled</li>
-							<li>Enable Normal User - allows a normal user to run the button or not </li>
-							<li>Run without Warning - if disabled a warning message will be presented</li>
-						</ul>
-						<div id="AdminPerms">
-							<script type="text/javascript">CreateButtonAdminTable();</script>
-						</div>
-					</div>
-				</div>
+		<p class="developers-message">[To the Developer - Add any details you wish to present the end user regarding the permissions of your buttons.  Do edit the permissions table itself as it will be automatically generated upon page load if your buttons are properly configured.]</p>
+		
+		
+		<!-- ************************************************************ -->
+		<!--  START: Button Permissions Table - DO NOT EDIT THIS SECTION  -->
+		<!-- ************************************************************ -->	
+		<div id="AdminPerms">
+			<script type="text/javascript">CreateButtonAdminTable();</script>
 		</div>
+		<!-- ************************************************************ -->
+		<!--                 END: Button Permissions Table                -->
+		<!-- ************************************************************ -->
 	
 	</div><!--End Tab5-->
-	
-
-
-
-
-</div><!--End content-container-->    		
 <!-- ************************************************ -->
-<!--                 END: Page Content                -->
-<!-- ************************************************ -->
+<!--              End: Page Tab Content               -->
+<!-- ************************************************ -->   	
+
+
 
 
 
@@ -468,7 +455,7 @@
 <!-- ************************************************ -->
 <!--      START: Footer - DO NOT EDIT THIS SECTION    -->
 <!-- ************************************************ -->
-<script type="text/javascript" src="../common/template/footer.js"></script>
+<script type="text/javascript">CreateFooter();</script>
 <!-- ************************************************ -->
 <!--                    END: Footer                   -->
 <!-- ************************************************ -->
@@ -479,11 +466,10 @@
 
 <!-- ************************************************ -->
 <!-- START: Required Web Page Logic close of body tag -->
-<!-- DO NOT EDIT THIS SECTION EXCEPT FOR WHERE NOTED  -->
+<!--             DO NOT EDIT THIS SECTION             -->
 <!-- ************************************************ -->
 <script type="text/javascript">
-   // DEVELOPER NOTE: Set number of CDP buttons for page
-   var nCDPButtons = 2;  //Number of buttons for page.
+   var nCDPButtons = btncount;  // Number of buttons for page set by applib.js.
    // Global array of button objects inheriting from CDPButton class
    var oButtonsArray = [];
    oButtonsArray.length = nCDPButtons;  //Number of buttons for page. Array elements start with zero, so 3 buttons have elements 0 - 2.
@@ -492,8 +478,7 @@
 <script type="text/javascript">
    <!--
    // Globals used by ../common/webpagelogic.js
-   // DEVELOPER NOTE: Developer needs to set the next value
-   var PackageName = "apptemplate";
+   var PackageName = appname;  // Package name set by applib.js
 
 	// DEVELOPER NOTE: Next value can be set, but is optional
    var DemoPageName = "";	// Leave this blank or use an independent html file.

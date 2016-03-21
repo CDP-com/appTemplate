@@ -18,6 +18,8 @@ Changelog
 
 ----
 
+03/21/2016, smadara, Totally changed how common areas are embedded into main.html, modifed app-lib.js
+
 03/16/2016, smadara, Removed styling options to main.html, added additional instructions, added notes.txt
 
 03/14/2016, smadara, Added styling options to main.html, removed script.js
