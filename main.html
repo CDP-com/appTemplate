@@ -47,7 +47,7 @@
 <!-- ************************************************ -->
 <!--        START: App Title - DO NOT EDIT THIS SECTION      -->
 <!-- ************************************************ -->
-<script>
+<script type="text/javascript">
 document.title = apptitle + " | SnapBack Apps";
 </script>
 <!-- ************************************************ -->
@@ -62,114 +62,25 @@ document.title = apptitle + " | SnapBack Apps";
 <!--START: Required Scripts - DO NOT EDIT THIS SECTION-->
 <!-- ************************************************ -->
 <script type="text/javascript">
+	// Include package JS file after deployment
+	CreateAppJSFile();
+</script>
 
-	var ManifestURL_Local = "%ALLUSERSPROFILE%\\cdp\\snapback\\apps\\apptemplate\\apptemplate.xml";
-	// Check to see if User is admin 
-
-	
-// globals
-	var EnableButtonLMD=0;
-	var EnableButtonCurrent=0;
-    var curEnableButton=0;
-	var lastModDatebtn=0;
-    var defEnableBtn=0;
-	var AllowUserLMD=0;
-	var CurUserbtn="";
-	var CurrentUser=0;
-	var CautionLMD=0
-	var defcurCautionbtn=0;
-	var curCautionbtn=0;
-	var curCaution=0;
-	var defUserBtn="";
-	
-	// My Variables
+<script type="text/javascript">	
+	// Necessary variables for the buttons
 	var oTest = new ActiveXObject("wscript.shell");
 	DName = oTest.ExpandEnvironmentStrings("%COMPUTERNAME%") 
 	UName = oTest.ExpandEnvironmentStrings("%USERNAME%") 
-
-	var regBool=false;
-	var regNum=0;
-	var regString=null;
-	
-	// Initialize Global Permissions for Current User
-	InitializePermissions();    // needed because Install is not aware of all users and future users
-	var i=0;
-	    //Read App Registry Button Permissions 
-		curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number	
-        var AppRoot = "HKEY_LOCAL_MACHINE\\SOFTWARE\\CDP\\SnapBack\\Apps\\";
-	    var RegPath = AppRoot + appname + "\\button" + i + "\\CurrentEnableButton";
-		//alert("for button: "+i+"   RegPath="+RegPath);
-		regBool = fnRegExists(RegPath);
-			if (regBool==false)
-			{
-				// runService to initialize registry for app 
-				// comment out for development and load your initial perms via a .reg file
-				// comment out if you have no buttons
-				runService(ManifestURL_Local,"","perms");
-			}
-			else
-			{
-				// read in data
-				//loop through number of buttons set by author
-
-	            for (i=0; i<btncount; i++)
-				{
-
-				try {
-					// this is to test to see if any enable button changes has been made 
-					EnableButtonLMD = GetButtonIniValue(appname, i, "EnableButtonLastModifiedDate");
-					lastModDatebtn="btn"+i+"_EnableButtonLastModified";
-					//setbtnValue(lastModDate,EnableButtonLMD);   // set local global value to registry entry
-					curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
-					EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
-					curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
-				} catch (e) {
-					// there is no enablebutton date so just get the value there
-					curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
-					EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
-					curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
-				}
-				try {
-					// see if admin change Normal User Flag
-					AllowUserLMD = GetButtonIniValue(appname,i,"AllowUserLastModifiedDate");
-					lastModDate="btn"+i+"_AllowUserLastModifiedDate";
-					//lastModDate,eval(AllowUserLMD);
-					currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
-					curUserbtn="btn"+i+"_CurrentAllowUser";
-					CurUserbtn=eval(currentUser);
-				} catch (e) {
-				// Normal User has not been set by Admin  so just get allow user
-					currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
-					curUserbtn="btn"+i+"_CurrentAllowUser";
-					CurUserbtn=eval(currentUser);
-
-				}
-				try {
-					// Check if admin modified caution flag for this button
-					CautionLMD = GetButtonIniValue(appname,i,"CautionLastModifiedDate");
-					lastModDate="btn"+i+"_CautionLastModifiedDate";
-					//setbtnValue(lastModDate,CautionLMD);
-					curCautionbtn="btn"+i+"_CurrentCaution";
-					curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
-					//setbtnValue(curCautionbtn,curCaution);
-				}catch(e)
-				{
-	   				curCautionbtn="btn"+i+"_CurrentCaution";
-					curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
-				} 
-	} // end loop through buttons
-			}
-
-	//DONT need to read in registry values as we get them when we need them
-
 </script>
+
 <script type="text/javascript">
 	var menuarray = new Array();
 	var scrolled = false;
 </script>
-<script type="text/javascript">	  
-      function getRelativeURL()
-      {
+
+<script type="text/javascript">
+	// Detetermine if a link is relative to local page 
+    function getRelativeURL(){
          var relURL = "";
          var strhref = document.location.href;
          var array_url = strhref.split('/');
@@ -194,11 +105,12 @@ document.title = apptitle + " | SnapBack Apps";
          }
 
          return relURL;
-      }
+    }
 		     
 		var treemenu01;
 
-		function loadTree(divid,treeName,nodeURL,jv){		
+	// Load Navigation Outline 
+	function loadTree(divid,treeName,nodeURL,jv){		
 			var str="";
 			var tmptree;
 		// divid == tree[treeName] == var name for the treemenu
@@ -210,18 +122,20 @@ document.title = apptitle + " | SnapBack Apps";
 			tmptree.setKeyEvent(divid);
 			treemenu01=tmptree;
 			menuarray[divid]= tmptree;
-		}
-      
-      function pageScroll() {
+	}
+    
+	// Needed to reset the page scroll after tab click
+    function pageScroll(){
          if ( !scrolled )
          {
             scrolled = true;
             window.scrollTo(0,top);
             scrolldelay = setTimeout('pageScroll()', 200);
          }
-      }
+    }
 
-      window.onload = function(){
+	// Place focus with Outline upon page load
+    window.onload = function(){
          var treemenuobj = document.getElementById('treemenu01');
          if (treemenuobj)
          {
@@ -231,13 +145,12 @@ document.title = apptitle + " | SnapBack Apps";
 		 
 		
 		try {
-		GetCurrentUserLastLModifiedDate()	
+			GetCurrentUserLastLModifiedDate()	
 		}
 		catch (err) {
-		var Tripped = "<table cellpadding=2 cellspacing=2 width=%50><tr><td colspan=2><h3>Global Settings Buttons Not Enabled - Talk to Your Administrator</h3></td></tr><tr><td width=50%><input type='checkbox' name='radiobtn' disabled='disabled' onclick='ChangeSetGlobal();'>Global Set Current</td><td width=50%><input type='checkbox' name='radiobtn' disabled='disabled' checked='checked' onclick='ChangeGlobalInDefault();'>Global Set Default</td></tr></table>"
+			var Tripped = "<table cellpadding=2 cellspacing=2 width=%50><tr><td colspan=2><h3>Global Settings Buttons Not Enabled - Talk to Your Administrator</h3></td></tr><tr><td width=50%><input type='checkbox' name='radiobtn' disabled='disabled' onclick='ChangeSetGlobal();'>Global Set Current</td><td width=50%><input type='checkbox' name='radiobtn' disabled='disabled' checked='checked' onclick='ChangeGlobalInDefault();'>Global Set Default</td></tr></table>"
 		}	
-      }
-
+    }
 </script>
 
 <script>
@@ -245,9 +158,6 @@ document.title = apptitle + " | SnapBack Apps";
 	//The "Collapse Outline" Element
     $(document).ready(function() {
         $('.menu-link').bigSlide();
-		//if (Admin == "No") {
-		    //$(".acc-section").hide();
-		//}
     });
 	
 	//The "View More" Element
@@ -441,6 +351,8 @@ document.title = apptitle + " | SnapBack Apps";
 		<!--                 END: Button Permissions Table                -->
 		<!-- ************************************************************ -->
 	
+		
+		
 	</div><!--End Tab5-->
 <!-- ************************************************ -->
 <!--              End: Page Tab Content               -->
