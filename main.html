@@ -67,10 +67,94 @@ document.title = apptitle + " | SnapBack Apps";
 </script>
 
 <script type="text/javascript">	
-	// Necessary variables for the buttons
+	var EnableButtonLMD=0;
+	var EnableButtonCurrent=0;
+    var curEnableButton=0;
+	var lastModDatebtn=0;
+    var defEnableBtn=0;
+	var AllowUserLMD=0;
+	var CurUserbtn="";
+	var CurrentUser=0;
+	var CautionLMD=0
+	var defcurCautionbtn=0;
+	var curCautionbtn=0;
+	var curCaution=0;
+	var defUserBtn="";
+	
+	// My Variables
 	var oTest = new ActiveXObject("wscript.shell");
 	DName = oTest.ExpandEnvironmentStrings("%COMPUTERNAME%") 
 	UName = oTest.ExpandEnvironmentStrings("%USERNAME%") 
+	var regBool=false;
+	var regNum=0;
+	var regString=null;
+	
+	// Initialize Global Permissions for Current User
+	InitializePermissions();    // needed because Install is not aware of all users and future users
+	var i=0;
+	    //Read App Registry Button Permissions 
+		curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number	
+        var AppRoot = "HKEY_LOCAL_MACHINE\\SOFTWARE\\CDP\\SnapBack\\Apps\\";
+	    var RegPath = AppRoot + appname + "\\button" + i + "\\CurrentEnableButton";
+		//alert("for button: "+i+"   RegPath="+RegPath);
+		regBool = fnRegExists(RegPath);
+			if (regBool==false)
+			{
+				// runService to initialize registry for app 
+				// comment out for development and load your initial perms via a .reg file
+				// comment out if you have no buttons
+				runService(ManifestURL_Local,"","perms");
+			}
+			else
+			{
+				// read in data
+				//loop through number of buttons set by author
+	            for (i=0; i<btncount; i++)
+				{
+				try {
+					// this is to test to see if any enable button changes has been made 
+					EnableButtonLMD = GetButtonIniValue(appname, i, "EnableButtonLastModifiedDate");
+					lastModDatebtn="btn"+i+"_EnableButtonLastModified";
+					//setbtnValue(lastModDate,EnableButtonLMD);   // set local global value to registry entry
+					curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
+					EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
+					curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
+				} catch (e) {
+					// there is no enablebutton date so just get the value there
+					curEnableButton="btn"+i+"_CurrentEnableButton"; // setup local variable name for button number		
+					EnableButtonCurrent = GetButtonIniValue(appname,i,"CurrentEnableButton");  // Admin changed current value so get it
+					curEnableButton=eval(EnableButtonCurrent);  // set local global value to registry entry
+				}
+				try {
+					// see if admin change Normal User Flag
+					AllowUserLMD = GetButtonIniValue(appname,i,"AllowUserLastModifiedDate");
+					lastModDate="btn"+i+"_AllowUserLastModifiedDate";
+					//lastModDate,eval(AllowUserLMD);
+					currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
+					curUserbtn="btn"+i+"_CurrentAllowUser";
+					CurUserbtn=eval(currentUser);
+				} catch (e) {
+				// Normal User has not been set by Admin  so just get allow user
+					currentUser= GetButtonIniValue(appname,i,"CurrentAllowUser");
+					curUserbtn="btn"+i+"_CurrentAllowUser";
+					CurUserbtn=eval(currentUser);
+				}
+				try {
+					// Check if admin modified caution flag for this button
+					CautionLMD = GetButtonIniValue(appname,i,"CautionLastModifiedDate");
+					lastModDate="btn"+i+"_CautionLastModifiedDate";
+					//setbtnValue(lastModDate,CautionLMD);
+					curCautionbtn="btn"+i+"_CurrentCaution";
+					curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
+					//setbtnValue(curCautionbtn,curCaution);
+				}catch(e)
+				{
+	   				curCautionbtn="btn"+i+"_CurrentCaution";
+					curCaution= GetButtonIniValue(appname, i, "CurrentCaution"); 
+				} 
+	} // end loop through buttons
+			}
+	//DONT need to read in registry values as we get them when we need them
 </script>
 
 <script type="text/javascript">
