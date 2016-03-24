@@ -21,7 +21,8 @@ var btncount = 2;                            // This is the number of buttons on
 //Setup for Button0 (The First Button)
 var btn0_Title = "First Button Title";		// This is what is displayed on the button.
 var btn0_MouseOver = "A MouseOver for Button 1";	// This is what appears upon mouseover for the button.
-var btn0_Description = "First Description: This App displays a message when the user clicks the button on the left.";		// This is what is displayed as the description of the button.
+var btn0_Description = "First Description: This App displays a message when the button on the left is clicked.";		// This is what is displayed as the description of the button.
+var btn0_Why = "This is an example explanation of why someone would want to run this button.  For example, you would want to run this specific button to see how our apps are demonstrated. You can even include links such as <a href='http://www.google.com/' id='btn0-link' title='This is a link to Google'>this</a> to help provide greater context for a user.";		// Use this to explain to an end user why they would want to run this button.
 var btn0_Command = "displaymessage0.js";	// This is the actual script the button will be calling.
 var btn0_Source = "displaymessage0.txt";    // Duplicate the above script as a .txt file so that the source code can be shown on the How it Works tab.
 var btn0_CommandParms = "";                 // Add any parameters if and only if your command receives them.
@@ -55,7 +56,8 @@ var btn0_ScriptHasUI=0;                    	// Does the script have an UI? Neede
 //Setup for Button1 (The Second Button)
 var btn1_Title = "Second Button Title";		// This is what is displayed on the button.
 var btn1_MouseOver = "A MouseOver for Button 2";	// This is what appears upon mouseover for the button.
-var btn1_Description = "Second Description: This App displays a message when the user clicks the button on the left.";		// This is what is displayed as the description of the button.
+var btn1_Description = "Second Description: This App displays a message when the user clicks the button on the left.  By default, you have a 250 character limit before a 'more' link is provided which will expand the content for further reading.  This message is an example.  As you can see, this content is hidden by default but a user can expand this section and continue reading.<br /><br />This helps truncate certain sections, keep the page organized, and allow users the opportunity to find what they want without the hassle of reading extended text.";		// This is what is displayed as the description of the button.
+var btn1_Why = "The explaination for why someone would want to run this button.";		// Use this to explain to an end user why they would want to run this button.
 var btn1_Command = "displaymessage1.js";	// This is the actual script the button will be calling.
 var btn1_Source = "displaymessage1.txt";    // Duplicate the above script as a .txt file so that the source code can be shown on the How it Works tab.
 var btn1_CommandParms = "";                 // Add any parameters if and only if your command receives them.

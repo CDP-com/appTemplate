@@ -65,8 +65,12 @@ document.title = apptitle + " | SnapBack Apps";
 	// Include package JS file after deployment
 	CreateAppJSFile();
 </script>
-
-<script type="text/javascript">	
+<script type="text/javascript">
+	// Temporary Solution to Setting the Initial Permissions
+	var ManifestURL_Local = "%ALLUSERSPROFILE%\\cdp\\snapback\\apps\\apptemplate\\apptemplate.xml";
+	// Check to see if User is admin 
+	
+	// globals
 	var EnableButtonLMD=0;
 	var EnableButtonCurrent=0;
     var curEnableButton=0;
@@ -156,118 +160,6 @@ document.title = apptitle + " | SnapBack Apps";
 			}
 	//DONT need to read in registry values as we get them when we need them
 </script>
-
-<script type="text/javascript">
-	var menuarray = new Array();
-	var scrolled = false;
-</script>
-
-<script type="text/javascript">
-	// Detetermine if a link is relative to local page 
-    function getRelativeURL(){
-         var relURL = "";
-         var strhref = document.location.href;
-         var array_url = strhref.split('/');
-         var arraylength = array_url.length;
-         if (arraylength > 2)
-         {
-            relURL = "../" + array_url[arraylength - 2] + "/" + array_url[arraylength - 1];
-         }
-         else
-         {
-            relURL = document.location.href;
-         }
-         
-         if (relURL.indexOf("#") > -1)
-         {
-            relURL = relURL.substring(0, relURL.indexOf("#"));
-         }
-         
-         if (relURL.indexOf("?") > -1)
-         {
-            relURL = relURL.substring(0, relURL.indexOf("?"));
-         }
-
-         return relURL;
-    }
-		     
-		var treemenu01;
-
-	// Load Navigation Outline 
-	function loadTree(divid,treeName,nodeURL,jv){		
-			var str="";
-			var tmptree;
-		// divid == tree[treeName] == var name for the treemenu
-		// jsonVar == eval(treeName);
-		// nodeURL = string node url, this is the node that the tree will be opened to and focused on
-			tmptree = new cdpTree(divid,treeName,nodeURL);
-			tmptree.readScript(jv).renderTree();
-
-			tmptree.setKeyEvent(divid);
-			treemenu01=tmptree;
-			menuarray[divid]= tmptree;
-	}
-    
-	// Needed to reset the page scroll after tab click
-    function pageScroll(){
-         if ( !scrolled )
-         {
-            scrolled = true;
-            window.scrollTo(0,top);
-            scrolldelay = setTimeout('pageScroll()', 200);
-         }
-    }
-
-	// Place focus with Outline upon page load
-    window.onload = function(){
-         var treemenuobj = document.getElementById('treemenu01');
-         if (treemenuobj)
-         {
-            if (document.getElementById('treemenu01').visible)
-               document.getElementById('treemenu01').focus();
-         }
-		 
-		
-		try {
-			GetCurrentUserLastLModifiedDate()	
-		}
-		catch (err) {
-			var Tripped = "<table cellpadding=2 cellspacing=2 width=%50><tr><td colspan=2><h3>Global Settings Buttons Not Enabled - Talk to Your Administrator</h3></td></tr><tr><td width=50%><input type='checkbox' name='radiobtn' disabled='disabled' onclick='ChangeSetGlobal();'>Global Set Current</td><td width=50%><input type='checkbox' name='radiobtn' disabled='disabled' checked='checked' onclick='ChangeGlobalInDefault();'>Global Set Default</td></tr></table>"
-		}	
-    }
-</script>
-
-<script>
-	//Initialize jQuery UI Elements and Other UI Features
-	//The "Collapse Outline" Element
-    $(document).ready(function() {
-        $('.menu-link').bigSlide();
-    });
-	
-	//The "View More" Element
-	$(document).ready(function(){
-		$('.viewmore').showHide();
-	});
-
-	//The "Accordion" Element
-	//<![CDATA[
-	$(function(){
-		jQuery('.accordion').accordion({ collapsible:true, heightStyle:"content", active:false, autoHeight:true, disabled:true});
-		jQuery('.accordion h3.ui-accordion-header').click(function(){
-			jQuery(this).next().slideToggle();
-		});
-		jQuery('.accordion-expand-all').click(function(){
-			jQuery('.accordion h3.ui-accordion-header').next().slideDown();
-		});
-	});
-	//]]>
-
-	//The "Tabs" Element
-	$(function() {
-		$( "#content-tabs" ).tabs();
-	  }); 	
-</script>
-
 <script type="text/javascript" src="../common/scripts/onlinecheck.js"></script>
 <!-- ************************************************ -->
 <!--               END: Required Scripts              -->
@@ -320,7 +212,6 @@ document.title = apptitle + " | SnapBack Apps";
 		<li><a href="#tab2" title="The technical details of what this App does">How it Works</a></li>
 		<li><a href="#tab3" title="This App is free to Use">Pricing</a></li>
 		<li><a href="#tab4" title="Record of Each Committee's work and report to users">What's Certified</a></li>
-		<li><a href="#tab5" title="Permissions for this App">Permissions</a></li>
 	</ul>
 <!-- ************************************************ -->
 <!--                 END: Page Tabs                   -->
@@ -372,7 +263,20 @@ document.title = apptitle + " | SnapBack Apps";
 	<div id="tab2">
 	
 		<p class="developers-message">[To the Developer - Use this section to describe in greater technical detail how your app works]</p>
+		
+		<!-- ************************************************************ -->
+		<!--  START: Button Permissions Table - DO NOT EDIT THIS SECTION  -->
+		<!-- ************************************************************ -->	
+		<div id="AdminPerms">
+			<script type="text/javascript">CreateButtonAdminTable();</script>
+		</div>
+		<!-- ************************************************************ -->
+		<!--                 END: Button Permissions Table                -->
+		<!-- ************************************************************ -->
 
+		
+		
+		
 		<!-- ************************************************************************ -->
 		<!--           Below is the standard technical details instructions           -->
 		<!-- Remove and include your app's individual technical details in plain HTML -->
@@ -419,25 +323,6 @@ document.title = apptitle + " | SnapBack Apps";
 		
 		
 	</div><!--End Tab4-->
-	
-	<div id="tab5">
-	
-		<p class="developers-message">[To the Developer - Add any details you wish to present the end user regarding the permissions of your buttons.  Do edit the permissions table itself as it will be automatically generated upon page load if your buttons are properly configured.]</p>
-		
-		
-		<!-- ************************************************************ -->
-		<!--  START: Button Permissions Table - DO NOT EDIT THIS SECTION  -->
-		<!-- ************************************************************ -->	
-		<div id="AdminPerms">
-			<script type="text/javascript">CreateButtonAdminTable();</script>
-		</div>
-		<!-- ************************************************************ -->
-		<!--                 END: Button Permissions Table                -->
-		<!-- ************************************************************ -->
-	
-		
-		
-	</div><!--End Tab5-->
 <!-- ************************************************ -->
 <!--              End: Page Tab Content               -->
 <!-- ************************************************ -->   	

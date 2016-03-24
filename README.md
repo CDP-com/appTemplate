@@ -17,6 +17,8 @@ Add any notes you may find pertinent
 Changelog
 
 ----
+03/24/2016, smadara, Continued to clean up main.html included consolidating the Permissions tab, Added additional variables to app-lib.js
+
 03/22/2016, smadara, Cleaned up main.html, Cleaned up app-lib.js and added additional variables
 
 03/21/2016, smadara, Totally changed how common areas are embedded into main.html, modifed app-lib.js
