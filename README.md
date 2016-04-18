@@ -17,6 +17,8 @@ Add any notes you may find pertinent
 Changelog
 
 ----
+04/18/2016, smadara, Added custom run function for buttons
+
 03/24/2016, smadara, Continued to clean up main.html included consolidating the Permissions tab, Added additional variables to app-lib.js
 
 03/22/2016, smadara, Cleaned up main.html, Cleaned up app-lib.js and added additional variables
